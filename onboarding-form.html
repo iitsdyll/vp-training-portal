@@ -116,8 +116,8 @@
         <strong>What happens automatically:</strong> Work email created, Slack invite sent, SignNow ICA sent for e-signature, welcome email with training portal link and all login info delivered to their personal email.
       </div>
 
-      <!-- This form posts to a Make.com webhook — replace the action URL after creating the scenario -->
-      <form id="onboarding-form" action="MAKE_WEBHOOK_URL_HERE" method="POST" onsubmit="handleSubmit(event)">
+      <!-- Posts JSON payload to Make.com webhook "hire-trigger" (M-HIRE-1 scenario) -->
+      <form id="onboarding-form" action="https://hook.us2.make.com/gj626kanx6a7inkdkmkl6hp31u7d8ie6" method="POST" onsubmit="handleSubmit(event)">
 
         <div class="row">
           <div>
@@ -140,8 +140,14 @@
           <option value="designer">Designer</option>
         </select>
 
-        <label>Territory / Focus Area (optional)</label>
-        <input type="text" name="territory" placeholder="e.g. New Jersey, Pennsylvania, Tennessee...">
+        <label>Territory (for sales reps)</label>
+        <select name="territory">
+          <option value="" selected>— N/A (designer or non-territorial) —</option>
+          <option value="NJ">New Jersey (NJ)</option>
+          <option value="PA">Pennsylvania (PA)</option>
+          <option value="TN">Tennessee (TN)</option>
+          <option value="OTHER">Other / TBD</option>
+        </select>
 
         <label>Start Date</label>
         <input type="date" name="start_date" required>
@@ -165,7 +171,7 @@
       const data = Object.fromEntries(new FormData(form));
 
       // Generate work email
-      data.work_email = (data.first_name.toLowerCase() + '.' + data.last_name.toLowerCase() + '@vitalprospects.com').replace(/\s+/g, '');
+      data.work_email = (data.first_name.toLowerCase() + '.' + data.last_name.toLowerCase() + '@vitalprospects.com').replace(/\\s+/g, '');
 
       try {
         await fetch(form.action, {
