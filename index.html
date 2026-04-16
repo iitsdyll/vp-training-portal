@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalProspects Training Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface-hover: #1a1a24;
+      --border: #23232f;
+      --text: #e8e8ed;
+      --text-muted: #8b8b9e;
+      --accent: #6c5ce7;
+      --accent-light: #a29bfe;
+      --sales: #00b894;
+      --sales-bg: rgba(0, 184, 148, 0.08);
+      --sales-border: rgba(0, 184, 148, 0.2);
+      --design: #e17055;
+      --design-bg: rgba(225, 112, 85, 0.08);
+      --design-border: rgba(225, 112, 85, 0.2);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #13131a 0%, #1a1a2e 50%, #16213e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 24px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(108, 92, 231, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+    .header h1 span { color: var(--accent-light); }
+    .header p {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 15px;
+      position: relative;
+    }
+
+    /* Navigation Tabs */
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn:hover { background: var(--surface-hover); color: var(--text); }
+    .nav-btn.active-sales { background: var(--sales-bg); color: var(--sales); border-color: var(--sales-border); }
+    .nav-btn.active-design { background: var(--design-bg); color: var(--design); border-color: var(--design-border); }
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-sales { background: var(--sales); }
+    .dot-design { background: var(--design); }
+
+    /* Main Content */
+    .main { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Section Header */
+    .section-header { margin-bottom: 32px; }
+    .section-header h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .section-header p { color: var(--text-muted); font-size: 14px; }
+
+    /* Divider label */
+    .divider-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin: 36px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Platform Card */
+    .platform-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .platform-card:hover { border-color: #33334a; }
+
+    .platform-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .platform-header:hover { background: var(--surface-hover); }
+
+    .platform-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .platform-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .platform-name { font-size: 17px; font-weight: 700; }
+    .platform-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .chevron {
+      color: var(--text-muted);
+      transition: transform 0.25s ease;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .platform-card.open .chevron { transform: rotate(180deg); }
+
+    .platform-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .platform-card.open .platform-body { max-height: 3000px; }
+    .platform-body-inner { padding: 0 24px 24px; }
+
+    /* Resource Links */
+    .resource-group { margin-bottom: 16px; }
+    .resource-group:last-child { margin-bottom: 0; }
+    .resource-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+    .resource-link:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: #3a3a4f;
+      transform: translateX(4px);
+    }
+    .resource-link:last-child { margin-bottom: 0; }
+
+    .link-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .link-icon.video { background: rgba(255, 71, 87, 0.12); color: #ff4757; }
+    .link-icon.course { background: rgba(108, 92, 231, 0.12); color: var(--accent-light); }
+    .link-icon.guide { background: rgba(0, 184, 148, 0.12); color: #00b894; }
+    .link-icon.webinar { background: rgba(253, 203, 110, 0.12); color: #fdcb6e; }
+
+    .link-text { flex: 1; }
+    .link-title { font-size: 14px; font-weight: 600; }
+    .link-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .link-arrow { color: var(--text-muted); font-size: 14px; }
+
+    /* Custom Videos Section */
+    .custom-slot {
+      padding: 16px 20px;
+      border: 2px dashed rgba(253, 203, 110, 0.2);
+      border-radius: 10px;
+      background: rgba(253, 203, 110, 0.05);
+      margin-bottom: 10px;
+    }
+    .custom-slot-title { font-size: 14px; font-weight: 600; color: #fdcb6e; margin-bottom: 4px; }
+    .custom-slot-desc { font-size: 12px; color: var(--text-muted); }
+
+    /* Tip Box */
+    .tip-box {
+      background: rgba(108, 92, 231, 0.06);
+      border: 1px solid rgba(108, 92, 231, 0.15);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .tip-box strong { color: var(--accent-light); }
+
+    /* Note box */
+    .note-box {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Platform icon colors */
+    .icon-dubsado { background: rgba(46, 134, 171, 0.15); color: #2e86ab; }
+    .icon-quo { background: rgba(76, 175, 80, 0.15); color: #4caf50; }
+    .icon-slack { background: rgba(224, 30, 90, 0.15); color: #e01e5a; }
+    .icon-calendly { background: rgba(0, 107, 255, 0.15); color: #006bff; }
+    .icon-google { background: rgba(66, 133, 244, 0.15); color: #4285f4; }
+    .icon-figma { background: rgba(162, 89, 255, 0.15); color: #a259ff; }
+    .icon-webflow { background: rgba(67, 83, 255, 0.15); color: #4353ff; }
+    .icon-sitedrop { background: rgba(0, 206, 209, 0.15); color: #00ced1; }
+    .icon-custom { background: rgba(253, 203, 110, 0.08); color: #fdcb6e; }
+    .icon-num { font-size: 18px; font-weight: 800; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header h1 { font-size: 24px; }
+      .nav-btn { padding: 10px 20px; font-size: 14px; }
+      .main { padding: 20px 16px 60px; }
+      .platform-header { padding: 16px; }
+      .platform-body-inner { padding: 0 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1><span>VitalProspects</span> Training Portal</h1>
+    <p>Everything you need to learn your tools and start closing deals or building sites</p>
+  </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn active-sales" onclick="showSection('sales')" id="btn-sales">
+      <span class="nav-dot dot-sales"></span> Sales Reps
+    </button>
+    <button class="nav-btn" onclick="showSection('design')" id="btn-design">
+      <span class="nav-dot dot-design"></span> Designers
+    </button>
+  </div>
+
+  <div class="main">
+
+    <!-- ========================== SALES REPS ========================== -->
+    <div class="section active" id="section-sales">
+      <div class="section-header">
+        <h2>Sales Rep Training</h2>
+        <p>Everything Brady, Tristan, and John need &mdash; from platform tools to sales skills to closing techniques.</p>
+      </div>
+
+      <div class="tip-box">
+        <strong>Recommended order:</strong> Dubsado first (your CRM home base), then Quo for calls, then SiteDrop AI for mockups. After that, learn Calendly, Slack, and Google Workspace. Once the tools are down, work through the sales training videos at the bottom.
+      </div>
+
+      <!-- ===== PLATFORM TOOLS ===== -->
+      <div class="divider-label">Platform Tools</div>
+
+      <!-- Dubsado -->
+      <div class="platform-card open">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-dubsado">D</div>
+            <div>
+              <div class="platform-name">Dubsado</div>
+              <div class="platform-desc">CRM &mdash; leads, proposals, contracts, invoicing</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://help.dubsado.com/en/articles/8076495-get-started-with-dubsado" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Get Started with Dubsado</div>
+                  <div class="link-subtitle">Official step-by-step onboarding &mdash; ~30 min</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://help.dubsado.com/en/articles/737963-dubsado-basics" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Dubsado Basics</div>
+                  <div class="link-subtitle">Core concepts &mdash; clients, invoices, workflows</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Video Training</div>
+              <a href="https://help.dubsado.com/en/articles/7921274-video-resources-and-webinars" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Video Resources &amp; Webinars</div>
+                  <div class="link-subtitle">Official video library &mdash; all features covered</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.dubsado.com/livewebinars" target="_blank" class="resource-link">
+                <div class="link-icon webinar">&#9673;</div>
+                <div class="link-text">
+                  <div class="link-title">Live Webinars</div>
+                  <div class="link-subtitle">Weekly live training sessions from the Dubsado team</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Reference</div>
+              <a href="https://help.dubsado.com/en/articles/467045-the-dubsado-setup-checklist" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9745;</div>
+                <div class="link-text">
+                  <div class="link-title">Dubsado Setup Checklist</div>
+                  <div class="link-subtitle">Step-by-step account configuration checklist</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://help.dubsado.com/en/collections/221719-getting-started-with-dubsado" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9776;</div>
+                <div class="link-text">
+                  <div class="link-title">Full Getting Started Collection</div>
+                  <div class="link-subtitle">Complete article library organized by topic</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quo -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-quo">Q</div>
+            <div>
+              <div class="platform-name">Quo</div>
+              <div class="platform-desc">Business phone system (formerly OpenPhone)</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://www.quo.com/demo" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Watch the Quo Demo</div>
+                  <div class="link-subtitle">Full product walkthrough &mdash; beginner's guide to setup</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://support.quo.com" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Quo Resource Center</div>
+                  <div class="link-subtitle">Guides, tutorials, and community help</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Tutorials</div>
+              <a href="https://www.quo.com/blog/category/tutorials/" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9997;</div>
+                <div class="link-text">
+                  <div class="link-title">Quo Tutorials Blog</div>
+                  <div class="link-subtitle">How-to articles &mdash; business lines, VoIP numbers, call handling</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.quo.com/downloads" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#8615;</div>
+                <div class="link-text">
+                  <div class="link-title">Download Quo Apps</div>
+                  <div class="link-subtitle">iOS, Android, Mac, Windows, &amp; Web</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SiteDrop AI -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-sitedrop">S</div>
+            <div>
+              <div class="platform-name">SiteDrop AI</div>
+              <div class="platform-desc">AI mockup generator &mdash; create quick site previews to close the sale</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Getting Started</div>
+              <a href="https://sitedrop.ai/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">SiteDrop AI &mdash; Main Platform</div>
+                  <div class="link-subtitle">Describe the client's business, generate a mockup instantly &mdash; no coding required</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">How to Use It in Sales</div>
+              <div class="note-box">
+                <strong style="color: var(--sales);">Sales leverage move:</strong> Before or during a sales call, plug the prospect's business info into SiteDrop AI and generate a quick mockup. Show them what their site <em>could</em> look like &mdash; this turns an abstract pitch into something visual and tangible. Published previews deploy to Vercel (not sitedrop.ai subdomains). The interface is straightforward: type a description, generate, and refine.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendly -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-calendly">C</div>
+            <div>
+              <div class="platform-name">Calendly</div>
+              <div class="platform-desc">Scheduling &mdash; book sales calls and close meetings</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://registration.calendly.com/series/110fc34f-2349-4248-bafd-5eaed03032e9" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Getting Started with Calendly (Official Training)</div>
+                  <div class="link-subtitle">Complete onboarding course &mdash; under 1 hour</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://help.calendly.com/hc/en-us/categories/23988873731991-Getting-Started" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Getting Started Guides</div>
+                  <div class="link-subtitle">Step-by-step setup with tips and examples</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Video Tutorials</div>
+              <a href="https://help.calendly.com/hc/en-us/p/video-tutorials" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Calendly Video Tutorials</div>
+                  <div class="link-subtitle">How-to videos &mdash; availability, event types, booking pages &amp; more</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slack -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-slack">S</div>
+            <div>
+              <div class="platform-name">Slack</div>
+              <div class="platform-desc">Team communication &mdash; channels, DMs, file sharing</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://slack.com/help/articles/360059928654-How-to-use-Slack--your-quick-start-guide" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack Quick Start Guide</div>
+                  <div class="link-subtitle">Your first tour &mdash; channels, messages, and navigation</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://slack.com/events/slack-101-getting-started-video-guide" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack 101 &mdash; Getting Started Video</div>
+                  <div class="link-subtitle">Basics, best practices, and productivity tips</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Video Tutorials</div>
+              <a href="https://slack.com/help/articles/360059976673-Slack-video-tutorials" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack Video Tutorials Library</div>
+                  <div class="link-subtitle">Short videos covering every core Slack feature</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://slack.com/events/workshop-101" target="_blank" class="resource-link">
+                <div class="link-icon webinar">&#9673;</div>
+                <div class="link-text">
+                  <div class="link-title">Workshop 101 (On-Demand)</div>
+                  <div class="link-subtitle">60-minute interactive training from Slack experts</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Workspace -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-google">G</div>
+            <div>
+              <div class="platform-name">Google Workspace</div>
+              <div class="platform-desc">Gmail, Drive, Docs, Sheets, Calendar, Meet</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://support.google.com/a/users/answer/9389764" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Google Workspace Learning Center</div>
+                  <div class="link-subtitle">Quick start guides for email, calendar, video meetings &mdash; 7 easy steps</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://workspace.google.com/training/" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Google Workspace Training Hub</div>
+                  <div class="link-subtitle">Official training for Gmail, Docs, Sheets, Slides, Meet, Calendar &amp; Drive</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SALES TRAINING ===== -->
+      <div class="divider-label">Web Design Sales Training</div>
+
+      <!-- Selling to Local Businesses -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-custom icon-num">1</div>
+            <div>
+              <div class="platform-name">Selling Web Design to Local Businesses</div>
+              <div class="platform-desc">How to pitch, price, and close website deals with small businesses</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">YouTube Channels</div>
+              <a href="https://www.youtube.com/@AdamErhart" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Adam Erhart &mdash; Modern Marketing</div>
+                  <div class="link-subtitle">1,000+ videos &mdash; sell websites to local businesses using no-code + AI, turn free sites into $5K-$20K/mo retainers</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.adamerhart.com/how-to-sell-websites-to-local-businesses/" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">How to Sell Websites to Local Businesses (Adam Erhart)</div>
+                  <div class="link-subtitle">Complete guide + video &mdash; build a site in 15 min, sell it as a recurring retainer</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.youtube.com/@leehblue" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Lee Blue &mdash; DoubleStack</div>
+                  <div class="link-subtitle">14K+ subs &mdash; 20-year agency owner teaching how to land $5K-$20K/yr local clients instead of one-off sites</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://doublestack.net/local-business-websites/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Selling Websites to Local Businesses (Lee Blue Guide)</div>
+                  <div class="link-subtitle">Stop selling one-off sites &mdash; build a local marketing system that generates recurring revenue</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Getting Clients & Prospecting -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-custom icon-num">2</div>
+            <div>
+              <div class="platform-name">Getting Clients &amp; Prospecting</div>
+              <div class="platform-desc">Finding leads, cold outreach, and building a client pipeline</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">YouTube Channels</div>
+              <a href="https://www.youtube.com/@foxwebschool" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Fox Web School &mdash; Rob O'Rourke</div>
+                  <div class="link-subtitle">1M+ views &mdash; sales mindset, running sales calls, the "Fox Prospecting System" for high-paying clients</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=apNXWyB4mcs" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">How to Find Web Design Clients (Fox Web School)</div>
+                  <div class="link-subtitle">Where to find projects, what clients to target, and how to close deals</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.youtube.com/@JoshHallco" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Josh Hall &mdash; Web Design Business</div>
+                  <div class="link-subtitle">#1 web design business podcast on YouTube &mdash; client acquisition, pricing, and sales confidence</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.youtube.com/@paytonclarksmith" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Payton Clark Smith</div>
+                  <div class="link-subtitle">130K+ followers &mdash; Webflow agency owner teaching how to find clients and scale a freelance agency</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Guides</div>
+              <a href="https://www.foxwebschool.com/blog-posts/how-to-get-web-design-clients" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9776;</div>
+                <div class="link-text">
+                  <div class="link-title">How to Get Web Design Clients (Fox Web School)</div>
+                  <div class="link-subtitle">Complete written guide &mdash; prospecting, cold outreach, and closing</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://callin.io/best-cold-calling-script-for-selling-website-design/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9997;</div>
+                <div class="link-text">
+                  <div class="link-title">Best Cold Calling Script for Selling Website Design</div>
+                  <div class="link-subtitle">Full script template &mdash; what to say when calling local businesses</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Discovery Calls & Closing -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-custom icon-num">3</div>
+            <div>
+              <div class="platform-name">Discovery Calls &amp; Closing</div>
+              <div class="platform-desc">Running the sales call, handling objections, and closing the deal</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Guides &amp; Scripts</div>
+              <a href="https://www.danbeeshin.com/blog/discovery-call-script" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9997;</div>
+                <div class="link-text">
+                  <div class="link-title">Discovery Call Script for Web Design (Danbee Shin)</div>
+                  <div class="link-subtitle">Exact script &mdash; how to lead the call, ask the right questions, transition to a proposal</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://leadcreativelydigital.com/the-essential-discovery-call-script-for-creative-entrepreneurs/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9997;</div>
+                <div class="link-text">
+                  <div class="link-title">Essential Discovery Call Script for Creatives</div>
+                  <div class="link-subtitle">Editable template with brand language guide and objection responses</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.wpbeaverbuilder.com/how-to-sell-websites-to-clients/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">How to Sell Websites Without Talking About Tools</div>
+                  <div class="link-subtitle">Focus on business value, not tech &mdash; lead funnel, screening, proposal, and follow-up</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Key Takeaway</div>
+              <div class="note-box">
+                Clients don't buy "a website." They buy more customers, a better online presence, and less hassle. Lead every call by understanding their business goals first, then show how a website solves their specific problem. Never pitch features &mdash; pitch results.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- General Sales Skills -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-custom icon-num">4</div>
+            <div>
+              <div class="platform-name">General Sales Skills</div>
+              <div class="platform-desc">Cold calling mastery, objection handling, and sales psychology</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">YouTube Channels</div>
+              <a href="https://www.youtube.com/@JeremyMiner" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Jeremy Miner &mdash; 7th Level / NEPQ</div>
+                  <div class="link-subtitle">Neuro-Emotional Persuasion Questioning &mdash; eliminate rejection, cold call without being pushy, close with psychology</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.youtube.com/@patrickdang" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Patrick Dang</div>
+                  <div class="link-subtitle">300K subs &mdash; ex-Oracle top performer, cold calling, lead gen, LinkedIn outreach, and sales fundamentals</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Deep Dive</div>
+              <a href="https://7thlevelhq.com/a-step-by-step-breakdown-of-the-nepq-sales-process/" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9776;</div>
+                <div class="link-text">
+                  <div class="link-title">NEPQ Sales Process Breakdown (Jeremy Miner)</div>
+                  <div class="link-subtitle">Full step-by-step guide &mdash; question types, conversation flow, psychology foundations</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://7thlevelhq.com/get-zero-sales-resistance-using-cold-calling-techniques-that-work/" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Zero Sales Resistance Cold Calling Techniques</div>
+                  <div class="link-subtitle">Why prospects resist and the exact techniques to bypass it</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom VitalProspects Videos -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon" style="background: rgba(253, 203, 110, 0.15); color: #fdcb6e; font-size: 16px; font-weight: 800;">VP</div>
+            <div>
+              <div class="platform-name">VitalProspects Custom Training</div>
+              <div class="platform-desc">In-house sales videos from your hired trainer &mdash; drop links here as they're delivered</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Custom Training Videos</div>
+              <div class="custom-slot"><div class="custom-slot-title">Video 1 &mdash; Awaiting Upload</div><div class="custom-slot-desc">Send the link to Claude and it'll be swapped in here.</div></div>
+              <div class="custom-slot"><div class="custom-slot-title">Video 2 &mdash; Awaiting Upload</div><div class="custom-slot-desc">Send the link to Claude and it'll be swapped in here.</div></div>
+              <div class="custom-slot"><div class="custom-slot-title">Video 3 &mdash; Awaiting Upload</div><div class="custom-slot-desc">Send the link to Claude and it'll be swapped in here.</div></div>
+              <div class="custom-slot"><div class="custom-slot-title">Video 4 &mdash; Awaiting Upload</div><div class="custom-slot-desc">Send the link to Claude and it'll be swapped in here.</div></div>
+              <div class="custom-slot"><div class="custom-slot-title">Video 5 &mdash; Awaiting Upload</div><div class="custom-slot-desc">Send the link to Claude and it'll be swapped in here.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================== DESIGNERS ========================== -->
+    <div class="section" id="section-design">
+      <div class="section-header">
+        <h2>Designer Training</h2>
+        <p>Everything Logan needs &mdash; design tools, the build platform, scheduling, and team communication.</p>
+      </div>
+
+      <div class="tip-box">
+        <strong>Recommended order:</strong> Figma first (your design foundation), then Webflow (the build platform). After a sales rep closes a client, you'll hop on a discovery call via Calendly to define the project. Learn Calendly, Slack, and Google Workspace to round things out.
+      </div>
+
+      <!-- ===== DESIGN TOOLS ===== -->
+      <div class="divider-label">Design &amp; Build Tools</div>
+
+      <!-- Figma -->
+      <div class="platform-card open">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-figma">F</div>
+            <div>
+              <div class="platform-name">Figma</div>
+              <div class="platform-desc">Design tool &mdash; wireframes, UI, prototyping, components</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://help.figma.com/hc/en-us/articles/3084820949288-Course-overview-Figma-Design-for-beginners-2025" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Figma Design for Beginners (Official Course)</div>
+                  <div class="link-subtitle">Build a portfolio site from scratch &mdash; shapes, auto layout, components, prototyping</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Courses &amp; Tutorials</div>
+              <a href="https://help.figma.com/hc/en-us/categories/23557013073047-Courses-tutorials-projects" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">All Figma Courses &amp; Tutorials</div>
+                  <div class="link-subtitle">Official library &mdash; beginner to advanced, organized by skill level</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://www.figma.com/community/design-tutorials/figma" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9881;</div>
+                <div class="link-text">
+                  <div class="link-title">Figma Community Tutorials</div>
+                  <div class="link-subtitle">Free community-made learning files and templates</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://help.figma.com/hc/en-us/sections/30880632542743-Figma-Design-for-beginners" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Beginner Video Series</div>
+                  <div class="link-subtitle">18-part series covering every core Figma tool</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Webflow -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-webflow">W</div>
+            <div>
+              <div class="platform-name">Webflow</div>
+              <div class="platform-desc">Website builder &mdash; production builds, responsive design, CMS</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://university.webflow.com/courses/getting-started-with-webflow" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Getting Started with Webflow</div>
+                  <div class="link-subtitle">Official intro course &mdash; visual-first platform foundations</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://university.webflow.com/courses/webflow-101" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9734;</div>
+                <div class="link-text">
+                  <div class="link-title">Webflow 101</div>
+                  <div class="link-subtitle">Build a full landing page step by step &mdash; responsive &amp; accessible</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Deep Dive</div>
+              <a href="https://university.webflow.com/courses/ultimate-web-design-course" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Ultimate Web Design Course</div>
+                  <div class="link-subtitle">100+ videos &mdash; HTML, CSS, layout, grids, CMS &mdash; beginner to advanced</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://university.webflow.com/courses" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9776;</div>
+                <div class="link-text">
+                  <div class="link-title">All Webflow University Courses</div>
+                  <div class="link-subtitle">Full catalog &mdash; SEO, layout, CMS, interactions, and more</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://university.webflow.com/videos" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">All Webflow University Videos</div>
+                  <div class="link-subtitle">Searchable video library for every feature</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== COMMUNICATION & SCHEDULING ===== -->
+      <div class="divider-label">Communication &amp; Scheduling</div>
+
+      <!-- Calendly -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-calendly">C</div>
+            <div>
+              <div class="platform-name">Calendly</div>
+              <div class="platform-desc">Scheduling &mdash; book discovery calls with clients after the rep closes them</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://registration.calendly.com/series/110fc34f-2349-4248-bafd-5eaed03032e9" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Getting Started with Calendly (Official Training)</div>
+                  <div class="link-subtitle">Complete onboarding course &mdash; under 1 hour</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://help.calendly.com/hc/en-us/categories/23988873731991-Getting-Started" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Getting Started Guides</div>
+                  <div class="link-subtitle">Step-by-step setup with tips and examples</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Video Tutorials</div>
+              <a href="https://help.calendly.com/hc/en-us/p/video-tutorials" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Calendly Video Tutorials</div>
+                  <div class="link-subtitle">How-to videos &mdash; availability, event types, booking pages &amp; more</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slack -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-slack">S</div>
+            <div>
+              <div class="platform-name">Slack</div>
+              <div class="platform-desc">Team communication &mdash; channels, DMs, file sharing</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://slack.com/help/articles/360059928654-How-to-use-Slack--your-quick-start-guide" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack Quick Start Guide</div>
+                  <div class="link-subtitle">Your first tour &mdash; channels, messages, and navigation</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://slack.com/events/slack-101-getting-started-video-guide" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack 101 &mdash; Getting Started Video</div>
+                  <div class="link-subtitle">Basics, best practices, and productivity tips</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+            <div class="resource-group">
+              <div class="resource-label">Video Tutorials</div>
+               <a href="https://slack.com/help/articles/360059976673-Slack-video-tutorials" target="_blank" class="resource-link">
+                <div class="link-icon video">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Slack Video Tutorials Library</div>
+                  <div class="link-subtitle">Short videos covering every core Slack feature</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://slack.com/events/workshop-101" target="_blank" class="resource-link">
+                <div class="link-icon webinar">&#9673;</div>
+                <div class="link-text">
+                  <div class="link-title">Workshop 101 (On-Demand)</div>
+                  <div class="link-subtitle">60-minute interactive training from Slack experts</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Workspace -->
+      <div class="platform-card">
+        <div class="platform-header" onclick="toggleCard(this)">
+          <div class="platform-info">
+            <div class="platform-icon icon-google">G</div>
+            <div>
+              <div class="platform-name">Google Workspace</div>
+              <div class="platform-desc">Gmail, Drive, Docs, Sheets, Calendar, Meet</div>
+            </div>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="platform-body">
+          <div class="platform-body-inner">
+            <div class="resource-group">
+              <div class="resource-label">Start Here</div>
+              <a href="https://support.google.com/a/users/answer/9389764" target="_blank" class="resource-link">
+                <div class="link-icon guide">&#9733;</div>
+                <div class="link-text">
+                  <div class="link-title">Google Workspace Learning Center</div>
+                  <div class="link-subtitle">Quick start guides for email, calendar, video meetings &mdash; 7 easy steps</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+              <a href="https://workspace.google.com/training/" target="_blank" class="resource-link">
+                <div class="link-icon course">&#9654;</div>
+                <div class="link-text">
+                  <div class="link-title">Google Workspace Training Hub</div>
+                  <div class="link-subtitle">Official training for Gmail, Docs, Sheets, Slides, Meet, Calendar &amp; Drive</div>
+                </div>
+                <span class="link-arrow">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function showSection(name) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn');
+      document.getElementById('section-' + name).classList.add('active');
+      document.getElementById('btn-' + name).classList.add('active-' + name);
+    }
+
+    function toggleCard(header) {
+      header.closest('.platform-card').classList.toggle('open');
+    }
+  </script>
+
+</body>
+                </html>
