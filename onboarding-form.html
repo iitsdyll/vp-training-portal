@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalProspects â New Hire Onboarding</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0f;
+      color: #e8e8ed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #13131a;
+      border: 1px solid #23232f;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 520px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    h1 span { color: #a29bfe; }
+    .subtitle {
+      color: #8b8b9e;
+      font-size: 14px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b8b9e;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a1a24;
+      border: 1px solid #23232f;
+      border-radius: 8px;
+      color: #e8e8ed;
+      font-family: inherit;
+      font-size: 15px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: #6c5ce7; }
+    select { cursor: pointer; appearance: none; }
+    .row { display: flex; gap: 16px; }
+    .row > div { flex: 1; }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    button:hover { background: #5b4bd5; }
+    .success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: #00b894;
+    }
+    .success p {
+      color: #8b8b9e;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .note {
+      background: rgba(108, 92, 231, 0.06);
+      border: 1px solid rgba(108, 92, 231, 0.15);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #8b8b9e;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .note strong { color: #a29bfe; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="form-view">
+      <h1><span>New Hire</span> Onboarding</h1>
+      <p class="subtitle">Fill this out after marking someone as "Hired" in Indeed. This triggers the full onboarding automation.</p>
+
+      <div class="note">
+        <strong>What happens automatically:</strong> Work email created, Slack invite sent, SignNow ICA sent for e-signature, welcome email with training portal link and all login info delivered to their personal email.
+      </div>
+
+      <!-- This form posts to a Make.com webhook â replace the action URL after creating the scenario -->
+      <form id="onboarding-form" action="MAKE_WEBHOOK_URL_HERE" method="POST" onsubmit="handleSubmit(event)">
+
+        <div class="row">
+          <div>
+            <label>First Name</label>
+            <input type="text" name="first_name" placeholder="John" required>
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input type="text" name="last_name" placeholder="Doe" required>
+          </div>
+        </div>
+
+        <label>Personal Email</label>
+        <input type="email" name="personal_email" placeholder="johndoe@gmail.com" required>
+
+        <label>Role</label>
+        <select name="role" required>
+          <option value="" disabled selected>Select role...</option>
+          <option value="sales_rep">Sales Rep</option>
+          <option value="designer">Designer</option>
+        </select>
+
+        <label>Territory / Focus Area (optional)</label>
+        <input type="text" name="territory" placeholder="e.g. New Jersey, Pennsylvania, Tennessee...">
+
+        <label>Start Date</label>
+        <input type="date" name="start_date" required>
+
+        <button type="submit">Start Onboarding Automation</button>
+      </form>
+    </div>
+
+    <div class="success" id="success-view">
+      <h2>Onboarding Triggered</h2>
+      <p>The automation is running. The new hire will receive their welcome email, SignNow contract, and training portal link at their personal email. Check Slack for the admin checklist of any manual invites needed.</p>
+      <br>
+      <button onclick="resetForm()">Onboard Another Hire</button>
+    </div>
+  </div>
+
+  <script>
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+
+      // Generate work email
+      data.work_email = (data.first_name.toLowerCase() + '.' + data.last_name.toLowerCase() + '@vitalprospects.com').replace(/\s+/g, '');
+
+      try {
+        await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          mode: 'no-cors'
+        });
+      } catch (err) {
+        // no-cors won't give us a readable response, but the webhook still fires
+      }
+
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('success-view').style.display = 'block';
+    }
+
+    function resetForm() {
+      document.getElementById('form-view').style.display = 'block';
+      document.getElementById('success-view').style.display = 'none';
+      document.getElementById('onboarding-form').reset();
+    }
+  </script>
+</body>
+</html>
